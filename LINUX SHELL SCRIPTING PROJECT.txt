@@ -1,0 +1,95 @@
+                                                                    *LINUX SHELL SCRIPTING PROJECT*
+##############################################################POSTFIX CMD [SEND EMAIL WITH SMAIL SMTP]################################################################
+       MY APP PASS:dolp eczd nygz wrpf
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    1  clear
+    2  sudo apt update -y
+    3  sudo apt install rpm
+    4  rpm -qa | grep postfix
+    5  sudo apt install postfix
+    6  history
+    7  clear
+    8  sudo apt install postfix
+    9  rpm -qa | grep mailx
+   10  sudo apt install mailutils
+   11  mailx --version
+   12  cd /etc/postfix/
+   13  ls -ltr
+   14  sudo cp main.cf main.cf_bkp
+   15  sudo vi main.cf
+--------------------------------------------------------------------
+relayhost = [smtp.gmail.com]:587
+--------------------------------------------------------------------
+   16  hostname -f
+   17  sudo vi main.cf  
+--------------------------------------------------------------------
+myhostname =ip-172-31-47-194.eu-north-1.compute.internal
+--------------------------------------------------------------------
+--------------------------------------------------------------------
+  last enter this lines
+--------------------------------------------------------------------
+
+#################                                    
+# Location of sasl_passwd we saved
+smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
+# Enables SASL authentication for postfix
+smtp_sasl_auth_enable = yes
+smtp_tls_security_level = encrypt
+# Disallow methods that allow anonymous authentication
+smtp_sasl_security_options = noanonymous
+---------------------------------------------------------------------   
+   18  pwd
+   20  ls -id /etc/postfix/sasl
+   21  cd sasl/
+   22  sudo touch sasl_passwd
+   23  sudo vi sasl_passwd    
+---------------------------------------------------------------------           
+[smtp.gmail.com]:587 anjalijadhav5205@gmail.com:dolpeczdnygzwrpf
+---------------------------------------------------------------------
+
+   24  pwd
+   25  ls -ltr
+   26  sudo postmap sasl_passwd
+   27  sudo chmod 600 *
+   28  ls -ltr
+   29  sudo systemctl start postfix.service
+   
+   31  sudo echo "Test Email From Anjali" | mail -s "Anjali Postfix Tutorial" anjalijadhav5205@gmail.com
+   32  cd ..
+   33  sudo vi main.cf
+----------------------------------------------------------------------
+comment this line  #smtp_tls_security_level =may
+----------------------------------------------------------------------
+
+   34  sudo systemctl restart postfix.service
+   35  sudo vi testfile
+----------------------------------------------------------------------
+Hi This Is Anju
+----------------------------------------------------------------------
+
+   36  sudo echo "Test Email From Anjali" | mail -s "Anjali Postfix Tutorial" -a testfile anjalijadhav5205@gmail.com
+
+
+
+######################################################MONITORING FREE DESK SPACE AND SENT AN ALERT EMAIL###############################################################
+
+    1 sudo vi fs_status.sh                                                                                                               
+    2 df -H | egrep -v "Filesystem|tmpfs" | grep "root"                                                                         
+    3 df -H | egrep -v "Filesystem|tmpfs" | grep "root" | awk '{print$5}'                                                
+    4 df -H | egrep -v "Filesystem|tmpfs" | grep "root" | awk '{print$5}' | tr -d %                                  
+    5 sudo vi fs_status.sh
+-----------------------------------------------------------------------
+
+#!/bin/bash
+# Monitoring the free filesystem space
+FU=$(df -H | egrep -v "Filesystem|tmpfs" | grep "root" | awk '{print $5}' | tr -d '%')
+TO="anjalijadhav5205@gmail.com"  # Corrected variable name for the email recipient
+
+if [[ $FU -ge 20 ]]; then
+    echo "Warning, disk space is low - $FU %" | mail -s "Disk SPACE ALERT" "$TO"
+else
+    echo "All Good"
+fi
+-----------------------------------------------------------------------
+
+   6 sudo bash fs_status.sh
